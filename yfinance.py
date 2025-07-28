@@ -1,19 +1,16 @@
 import streamlit as st
 import yfinance as yf
 
-st.title("Teste de Conexão com Yahoo Finance (via yfinance)")
+st.title("Teste de yfinance")
 
-ticker = st.text_input("Digite o ticker (ex: AAPL, MSFT, PETR4.SA):", "AAPL")
+ticker = "AAPL"
+try:
+    dados = yf.Ticker(ticker).history(period="5d")
+    if dados.empty:
+        st.warning("Nenhum dado encontrado.")
+    else:
+        st.success("Dados obtidos com sucesso!")
+        st.dataframe(dados)
+except Exception as e:
+    st.error(f"Erro: {e}")
 
-if ticker:
-    try:
-        st.write(f"Buscando dados para: {ticker}")
-        dados = yf.Ticker(ticker).history(period="5d")
-
-        if dados.empty:
-            st.error(f"Nenhum dado retornado para '{ticker}'. Verifique o símbolo.")
-        else:
-            st.success(f"Dados obtidos com sucesso para {ticker}!")
-            st.dataframe(dados)
-    except Exception as e:
-        st.error(f"Erro ao tentar obter os dados: {e}")
